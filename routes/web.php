@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('export', 'ExeclController@export')->name('export');
+Route::get('importExportView', 'ExeclController@importExportView');
+Route::post('import', 'ExeclController@import')->name('import');

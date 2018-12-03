@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -39,7 +40,7 @@ class AuthenticateController extends ApiController
         ]);
 
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->failed('认证信息不正确');
         }
 
@@ -47,19 +48,19 @@ class AuthenticateController extends ApiController
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->accessToken;
-        $success['username'] =  $user->username;
+        $success['token'] = $user->createToken('MyApp')->accessToken;
+        $success['username'] = $user->username;
 
         $this->setStatusCode(200);
 
-        return $this->status('注册成功',$success);
+        return $this->status('注册成功', $success);
     }
 
     // 登录
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone'    => 'required|exists:user',
+            'phone' => 'required|exists:user',
             'password' => 'required|between:5,32',
         ]);
 
@@ -84,7 +85,7 @@ class AuthenticateController extends ApiController
     public function logout(Request $request)
     {
 
-        if (Auth::guard('api')->check()){
+        if (Auth::guard('api')->check()) {
 
             Auth::guard('api')->user()->token()->revoke();
 
@@ -95,9 +96,10 @@ class AuthenticateController extends ApiController
     }
 
     // 第三方登录
-    public function redirectToProvider($driver) {
+    public function redirectToProvider($driver)
+    {
 
-        if (!in_array($driver,['qq','wechat'])){
+        if (!in_array($driver, ['qq', 'wechat'])) {
 
             throw new NotFoundHttpException;
         }
@@ -106,16 +108,17 @@ class AuthenticateController extends ApiController
     }
 
     // 第三方登录回调
-    public function handleProviderCallback($driver) {
+    public function handleProviderCallback($driver)
+    {
 
         $user = Socialite::driver($driver)->user();
 
         $openId = $user->id;
 
         // 第三方认证
-        $db_user = User::where('xxx',$openId)->first();
+        $db_user = User::where('xxx', $openId)->first();
 
-        if (empty($db_user)){
+        if (empty($db_user)) {
 
             $db_user = User::forceCreate([
                 'phone' => '',
@@ -137,21 +140,22 @@ class AuthenticateController extends ApiController
     //调用认证接口获取授权码
     protected function authenticateClient(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required',
+            'password' => 'required',
+        ]);
+
+
+        if ($validator->fails()) {
+            return $this->failed('认证参数不正确');
+        }
+
         $credentials = $this->credentials($request);
 
         // 个人感觉通过.env配置太复杂，直接从数据库查更方便
-        $password_client = Client::query()->where('password_client',1)->latest()->first();
+        $password_client = Client::query()->where('password_client', 1)->latest()->first();
 
-        //Log::info('查询',$password_client);
-
-        //return [
-        //    'grant_type' => 'password',
-        //    'client_id' => $password_client->id,
-        //    'client_secret' => $password_client->secret,
-        //    'username' => $credentials['phone'],
-        //    'password' => $credentials['password'],
-        //    'scope' => ''
-        //];
 
         $request->request->add([
             'grant_type' => 'password',

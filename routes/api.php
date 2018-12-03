@@ -15,8 +15,8 @@ use App\Http\Resources\User as UserResource;
 |
 */
 
-Route::post('register', 'API\AuthenticateController@register');
+Route::post('/register', 'API\AuthenticateController@register');
 
-Route::get('/demo','Api\IndexController@index');
+Route::post('/user','Api\IndexController@index');
 
 Route::post('/auth/token','Api\AuthenticateController@authenticated');
