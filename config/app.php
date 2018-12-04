@@ -177,9 +177,10 @@ return [
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
+        Zizaco\Entrust\EntrustServiceProvider::class,
 
+        Laravel\Passport\PassportServiceProvider::class,
 
-        Zizaco\Entrust\EntrustServiceProvider::class
     ],
 
     /*

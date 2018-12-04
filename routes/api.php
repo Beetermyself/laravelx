@@ -20,3 +20,7 @@ Route::post('/register', 'API\AuthenticateController@register');
 Route::post('/user','Api\IndexController@index');
 
 Route::post('/auth/token','Api\AuthenticateController@authenticated');
+
+Route::post('/addRole','Api\IndexController@addRoleName');
+
+Route::post('/setUserRole','Api\IndexController@setUserRole');
